@@ -1,6 +1,6 @@
-# LineageOS 22.1 for BLUEFOX NX1
+# LineageOS 23.2 for BLUEFOX NX1
 
-Build instructions for LineageOS 22.1 (Android 15) on the BLUEFOX NX1 (MT6768/MT6769, Helio G85).
+Build instructions for LineageOS 23.2 (Android 15) on the BLUEFOX NX1 (MT6768/MT6769, Helio G85).
 
 ## Device Specs
 
@@ -54,7 +54,7 @@ mkdir -p ~/android/lineage
 cd ~/android/lineage
 repo init \
   -u https://github.com/LineageOS/android.git \
-  -b lineage-22.1 \
+  -b lineage-23.2 \
   --git-lfs \
   --depth=1
 ```
@@ -66,14 +66,14 @@ repo init \
 ```bash
 mkdir -p .repo/local_manifests
 curl -o .repo/local_manifests/roomservice.xml \
-  https://raw.githubusercontent.com/crobibero/android_manifest_bluefox_nx1/master/roomservice.xml
+  https://raw.githubusercontent.com/crobibero/nx1_lineageos/master/roomservice.xml
 ```
 
 Or clone this repo and copy the file:
 
 ```bash
-git clone https://github.com/crobibero/android_manifest_bluefox_nx1.git
-cp android_manifest_bluefox_nx1/roomservice.xml .repo/local_manifests/roomservice.xml
+git clone https://github.com/crobibero/nx1_lineageos.git
+cp nx1_lineageos/roomservice.xml .repo/local_manifests/roomservice.xml
 ```
 
 ---
@@ -181,4 +181,4 @@ fastboot reboot
 - SELinux is set to **permissive** during initial bringup. Do not use permissive builds as daily drivers.
 - The kernel is a prebuilt GKI image; kernel source is not required for builds.
 - VoLTE/IMS support requires `vendor/mediatek/ims` (included via the local manifest).
-- The `hardware/mediatek` branch used is `lineage-22.1`.
+- The `hardware/mediatek` branch used is `lineage-23.2`.

@@ -25,13 +25,13 @@
     path="vendor/mediatek/ims"
     name="techyminati/android_vendor_mediatek_ims"
     remote="github"
-    revision="master" />
+    revision="android-16-qpr2" />
 
   <!-- MediaTek HAL support tree -->
   <project
     path="hardware/mediatek"
     name="LineageOS/android_hardware_mediatek"
     remote="github"
-    revision="lineage-22.1" />
+    revision="lineage-23.2" />
 
 </manifest>
