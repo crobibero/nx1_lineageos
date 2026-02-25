@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  LineageOS 22.1 local manifest for BLUEFOX NX1 (MT6768)
+  Place this file at: .repo/local_manifests/roomservice.xml
+  in your LineageOS source tree before running repo sync.
+-->
+<manifest>
+
+  <!-- Device tree -->
+  <project
+    path="device/bluefox/nx1"
+    name="crobibero/android_device_bluefox_nx1"
+    remote="github"
+    revision="master" />
+
+  <!-- Vendor blobs -->
+  <project
+    path="vendor/bluefox/nx1"
+    name="crobibero/android_vendor_bluefox_nx1"
+    remote="github"
+    revision="master" />
+
+  <!-- MTK IMS / VoLTE support -->
+  <project
+    path="vendor/mediatek/ims"
+    name="techyminati/android_vendor_mediatek_ims"
+    remote="github"
+    revision="master" />
+
+  <!-- MediaTek HAL support tree -->
+  <project
+    path="hardware/mediatek"
+    name="LineageOS/android_hardware_mediatek"
+    remote="github"
+    revision="lineage-22.1" />
+
+</manifest>
