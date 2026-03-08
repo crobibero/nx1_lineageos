@@ -116,53 +116,6 @@ Output images will be in:
 out/target/product/nx1/
 ```
 
-Key images to flash:
-
-| Image | Partition |
-|-------|-----------|
-| `boot.img` | boot_a / boot_b |
-| `init_boot.img` | init_boot_a / init_boot_b |
-| `vendor_boot.img` | vendor_boot_a / vendor_boot_b |
-| `dtbo.img` | dtbo_a / dtbo_b |
-| `super.img` (or sparse images) | super |
-| `vbmeta.img` | vbmeta_a / vbmeta_b |
-| `vbmeta_system.img` | vbmeta_system_a / vbmeta_system_b |
-| `vbmeta_vendor.img` | vbmeta_vendor_a / vbmeta_vendor_b |
-
----
-
-## 6. Flash
-
-### Via SP Flash Tool (Windows / Linux)
-
-1. Use SP Flash Tool with the MT6768 scatter file.
-2. Select **Download Only** mode.
-3. Flash the output images to their respective partitions.
-
-### Via fastboot (if device is already unlocked)
-
-```bash
-# Reboot to fastboot
-adb reboot bootloader
-
-# Flash A slot (repeat with _b suffix for B slot if needed)
-fastboot flash boot_a boot.img
-fastboot flash init_boot_a init_boot.img
-fastboot flash vendor_boot_a vendor_boot.img
-fastboot flash dtbo_a dtbo.img
-
-# Flash super (logical partitions)
-fastboot wipe-super super_empty.img
-# then sideload or flash sparse system/vendor/product/etc images
-
-# Flash vbmeta images (--disable-verity for bringup testing)
-fastboot flash vbmeta_a vbmeta.img
-fastboot flash vbmeta_system_a vbmeta_system.img
-fastboot flash vbmeta_vendor_a vbmeta_vendor.img
-
-fastboot reboot
-```
-
 ---
 
 ## Repos
@@ -182,3 +135,94 @@ fastboot reboot
 - The kernel is a prebuilt GKI image; kernel source is not required for builds.
 - VoLTE/IMS support requires `vendor/mediatek/ims` (included via the local manifest).
 - The `hardware/mediatek` branch used is `lineage-23.2`.
+
+# BlueFox NX1 – LineageOS Flashing Instructions
+==============================================
+
+The NX1 uses **Virtual A/B (VAB)** partitioning with recovery embedded in
+`vendor_boot`. All images are built to `out/target/product/nx1/`.
+
+Prerequisites
+-------------
+
+- ADB and fastboot installed on your PC
+- USB cable
+- OEM unlocking enabled in Developer Options (Settings → Developer Options →
+  OEM unlocking)
+
+First-Time Install (via fastboot)
+----------------------------------
+
+### 1. Unlock the bootloader
+
+```bash
+adb reboot bootloader
+fastboot flashing unlock
+```
+
+Confirm on-device when prompted. **This wipes the device.**
+
+### 2. Flash the boot images
+
+```bash
+fastboot flash boot boot.img
+fastboot flash init_boot init_boot.img
+fastboot flash vendor_boot vendor_boot.img
+fastboot flash dtbo dtbo.img
+fastboot flash vbmeta vbmeta.img --disable-verity --disable-verification
+fastboot flash vbmeta_system vbmeta_system.img --disable-verity --disable-verification
+fastboot flash vbmeta_vendor vbmeta_vendor.img --disable-verity --disable-verification
+```
+
+### 3. Boot into recovery
+
+```bash
+fastboot reboot recovery
+```
+
+Or use the hardware key combo (power + vol-up) if the above does not work.
+
+### 4. Wipe data
+
+In LineageOS Recovery: **Factory Reset → Format data/factory reset** → confirm.
+
+### 5. Sideload the OTA zip
+
+In LineageOS Recovery: **Apply Update → Apply from ADB**, then on your PC:
+
+```bash
+adb sideload lineage-23.2-20260227-UNOFFICIAL-nx1.zip
+```
+
+### 6. Reboot
+
+Select **Reboot System** in recovery, or run:
+
+```bash
+adb reboot
+```
+
+Subsequent Updates (OTA sideload)
+----------------------------------
+
+No wipe is needed for updates.
+
+```bash
+adb reboot recovery
+# In recovery: Apply Update → Apply from ADB
+adb sideload lineage-23.2-20260227-UNOFFICIAL-nx1.zip
+```
+
+Notes
+-----
+
+- Do **not** flash `system.img`, `vendor.img`, etc. individually via fastboot —
+  this is a dynamic partitions device and those go through the OTA mechanism.
+- To wipe the super partition (e.g. to recover from a bad flash):
+  ```bash
+  fastboot wipe-super super_empty.img
+  ```
+- If the device does not support standard `fastboot flashing unlock` (some
+  MT6768 devices use a vendor-specific unlock flow), check whether BlueFox
+  provides an unlock tool, or use SP Flash Tool to flash a preloader that
+  enables fastboot mode.
